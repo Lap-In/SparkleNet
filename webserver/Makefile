@@ -42,7 +42,7 @@ $(EXE): $(OBJS)
 # tous les fichiers .c qui incluent ce fichier sont recompilés
 # Après votre première compilation, regardez le contenu du fichier
 # makefile.dep généré afin de comprendre exactement de quoi il retourne.
-makefile . dep : $ ( CFILES ) $ ( HEADERS )
+makefile.dep : $(CFILES) $(HEADERS)
 	$(CC) -MM $(CFILES) > $@
 
 # Cette règle efface le fichier de dépendances et les fichiers .o
