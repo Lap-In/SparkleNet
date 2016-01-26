@@ -1,0 +1,3 @@
+3.2.1 :
+	1) Il me retourne une erreur indiquant que l'adresse du serveur est déjà utilisées.
+	2) 
