@@ -1,3 +1,5 @@
 3.2.1 :
-	1) Il me retourne une erreur indiquant que l'adresse du serveur est déjà utilisées.
-	2) 
+	1) Il ne lance pas le programme.
+	2) La commande kill le serveur.
+	3) Il ne se passe rien car, actuellement, on ne récupére que de l'IPv4.
+	4) Le second client lancée attend infiniment car le serveur ne lui répond jamais. Actuellement, notre serveur ne géré qu'un seul client.
