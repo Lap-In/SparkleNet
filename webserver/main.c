@@ -14,12 +14,12 @@ int main(int argc, char ** argv)
 		printf("Don ’t Panic !\n");
 		return 42;
 	}
-	
+
 	/* Crée le serveur */
 	int socket_serveur = creer_serveur(8080);
 	/* On accepte un client */
 	int socket_client = accept(socket_serveur, NULL, NULL);
-
+	initialiser_signaux();
 	/* Traitement d'erreur */
 	if (socket_client == -1)
 	{
