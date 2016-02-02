@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <signal.h>
 
 #include "socket.h"
 
@@ -50,4 +51,10 @@ int creer_serveur(int port)
 	}
 
 	return socket_serveur;
+}
+void initialiser_signaux(void){
+  if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+    {
+      perror ("signal");
+    }
 }
