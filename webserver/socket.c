@@ -22,6 +22,10 @@ int creer_serveur(int port)
 		perror ( " socket_serveur " );
 		return -1;
 	}
+	int optval = 1;
+	if (setsockopt(socket_serveur, SOL_SOCKET, SO_REUSEADDR, &optval,
+		       sizeof(int)) == -1)
+	  perror("Can not set SO_REUSEADDR option");
 	/* Utilisation de la socket serveur */
 
 	/** Configuration de la socket */
