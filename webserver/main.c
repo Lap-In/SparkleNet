@@ -7,6 +7,8 @@
 #include <sys/wait.h>
 
 #include "socket.h"
+
+
 /* Le processus de traitement d'un client */
 int traitement_client(int socket_client){
   /* Attend une seconde */
@@ -57,12 +59,13 @@ int main(int argc, char ** argv)
     /* Si dans le processus fils */
     if(pid==0){
       traitement_client(socket_client);
+      close(socket_client);
     }
   }
 	
 
   /* Fermeture des connexions et du serveur */
-  close(socket_client);
+ 
   close(socket_serveur);
 
   return 0;
