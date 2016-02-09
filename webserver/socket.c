@@ -39,37 +39,41 @@ int creer_serveur(int port)
   saddr.sin_addr.s_addr = INADDR_ANY; /* écoute sur toutes les interfaces */
 	
   if (bind(socket_serveur, (struct sockaddr *) &saddr , sizeof(saddr)) == -1)
-    {
+  {
       perror ("bind socker_serveur");
       return -1;
-    }
+  }
 
   /** Démarer l'attente de connexions */
   if (listen(socket_serveur,10) == -1)
-    {
+  {
       perror("listen socket_serveur");
       return -1;
-    }
+  }
 
   return socket_serveur;
 }
-
-void init_pid_capture()
-{
-  struct sigaction sa ;
-  sa.sa_handler = (void *) waitpid;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = SA_RESTART ;
-  if(sigaction(SIGCHLD,&sa, NULL) == -1)
-    {
-      perror ("sigaction(SIGCHLD)" );
-    }
-    }
-
-void initialiser_signaux(void){
-  if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-    {
-      perror ("signal");
-    }
+/* renovie la fonction waitpid*/
+void traitement_signal(int sig) {
+  printf("Signal %d reçu \n", sig);
+  int status;
+  waitpid(-1, &status, WNOHANG | WUNTRACED);
 }
-
+/* permet d'intialiser les signaux pour ignorer le signal SIGPIPE et
+de recuperer le signal SIGCHLD qui renverra sur traitement_signal */
+void initialiser_signaux(void)
+{
+  if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+  {
+    perror("signal");
+  }
+  
+  struct sigaction sa;
+  sa.sa_handler = traitement_signal;
+  //sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+  if (sigaction(SIGCHLD, &sa, NULL) == -1)
+  {
+    perror ("sigaction(SIGCHLD)");
+  }
+}
