@@ -63,10 +63,10 @@ void traitement_signal(int sig) {
 de recuperer le signal SIGCHLD qui renverra sur traitement_signal */
 void initialiser_signaux(void)
 {
-  if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+  /* if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
   {
     perror("signal");
-  }
+    }*/
   
   struct sigaction sa;
   sa.sa_handler = traitement_signal;

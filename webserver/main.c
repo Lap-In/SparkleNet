@@ -16,14 +16,29 @@ int traitement_client(int socket_client){
 
   /* Affichage du message de bienvenue */
   char *message_bienvenue = "__________________________________________▓▓▓\n_________________________________________▓▒▒▒▓▓\n____________________▄▄▄▄▄▄▄▄▄__________▓▒▒▒▒▒▓\n___▓▓▓▓▓____▄█████▓▓▓▓▓▓░░███████▓▒▒▒▒▓▒▓\n____▓▒▓▒▓▓▓██▓█▓▓▓▓▓▓▓░░░▓▓▓▓▓▓▓▓▒▒▒▒▒▓▒▓\n______▓▒▒▒▓▒▒▓▓▓▓▓▓▓▓░░░▓▓▓▓▓▓▓▓█▒▒▒▒▒▒▓▒▓\n______█▓▓▒▒▓▒▒▓▒▒▓▓▓░░░▓▓▓▓▓▓▓▓█▒▒▒▒▒▒▒▓▒▓\n____▄█▓▓█▓▓▓▒▒▒▓▒▓▓░░░░▓▓▓▓▓▓▓▓█▒▒▒▒▒▒▓▒▒▓\n___█▓▓▓█▓▓█▓▓▒▓▒▓▓▓░░░░▓▓▓▓▓▓▓▓▓█▒▒▒▒▓▒▒▒▓\n__█▓▓▓█▓▓█▓▓▓▓▓▓▓▓▓░░░█████████████▒▒▒▒▒▒▓\n__█▓▓▓█▓▓█▓▓▓▓▓▓██████▒▌__▓█_____▓▓▒▒▒▒▒▒▒▓\n_▐█▓▓█▓▓▓█▓▓████▒▒▒▒▒▒▌__▓▓█▄____▓▓▒▒▒▒▒▒▓\n_▐█▓█▓▓▓▓███▒▒▒▒▒▒▒▒▒▒▌__▓▓█████▓▓▒▒▒▒▒▒▓\n__█▓█▓▓██_▅▄██▄▒▒▒▒▒▒▒▐___▓▓█▄_██▓▓▄▅▅▒▒▒▓\n__█▓▓██__▅▄▄▄▌__▀▄▒▒▒▒▒▐___▓▓▓████▓▅▅▄▒▒▒█\n__█▓█_________▓▄___▀▒▒▒▒▒▐____▓▓▓▓▓▓▅▅▄▒▒▒██\n__██___________▓▓█▀█▄▒▒▒▒▒▌________▒▒▒▒▒▒█▓█▌\n_________________▓▓███▒▒▒▒▒▐____▒▒▒██▒▒██▓██▌\n___________________▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒█▓▓██▓▓██▓▌\n____________________▓▒▒▄▒▒▌▒▒▒▒▒▒▒█▓▓▓▓██▓▓▓█\n___________________▓▒▒▒▒▒▐▒▒▒▒▒▒▒█▓███▓▓▓█▓▓█▌\n_____________________▓▓▓▄▀▒▒▒▒▓▓▓█▓▓▓▓▓▓█▓▓▓▓██\n_________________________▓▓▓▓▓▓____█▓▓██▀▀█▓▓▓▓░░█\n______________________________________▀▀__▄█▓▓▓▓▓░░▓█\n_______________________________________▄██▓▓▓▓▓▓░░▓▓█\n_____________________________________██▓▓▓▓▓▓▓▓░░▓▓█\n______________________________________█▓▓▓▓▓▓▓░░░▓▓█\n_______________________________________█▓▓▓▓▓░░░▓▓▓█\n________________________________________█▓▓▓░░░▓▓▓▓█\n__________________________________________██░░░▓▓▓▓█\n_____________________________________________█░▓▓▓█\n_______________________________________________████\n";
-  write(socket_client, message_bienvenue, strlen(message_bienvenue));
- 
+  /* write(socket_client, message_bienvenue, strlen(message_bienvenue)); */
+   FILE *file = fdopen(socket_client,"w+");
+       if(fprintf(file,message_bienvenue)<0){
+      perror("fprintf");
+    }
   /* Affichage et lecture des messages envoyées par le client */
   while(1) {
     char *buffer = malloc(300*sizeof(char));
-    read(socket_client, buffer, 300*sizeof(char));
-    write(socket_client, buffer, strlen(buffer));
+    
+    if(fgets(buffer,300,file)==NULL){
+      perror("fgets");
+    }
+    if(fprintf(file,"<SparkleNet> ")<0){
+      perror("fprintf");
+    }
+    if(fprintf(file,buffer)<0){
+      perror("fprintf");
+    }
+
+    /* read(socket_client, buffer, 300*sizeof(char));
+       write(socket_client, buffer, strlen(buffer));*/
   }
+      fclose(file);
   return 0;
 }
 
@@ -38,8 +53,7 @@ int main(int argc, char ** argv)
 
   /* Crée le serveur */
   int socket_serveur = creer_serveur(8080);
-  /* Initialise la capture du signal d'interruption (Crtl C) */
-    initialiser_signaux();
+
   /* Variable qui contiendra le descripteur de fichier de la socket */
   int socket_client;
 
@@ -47,6 +61,8 @@ int main(int argc, char ** argv)
   while(1) {
     /* On accepte un client */
     socket_client = accept(socket_serveur, NULL, NULL);
+      /* Initialise la capture du signal d'interruption (Ctrl C) */
+    initialiser_signaux();
     /* Traitement d'erreur */
     if (socket_client == -1) {
       perror ("accept");
