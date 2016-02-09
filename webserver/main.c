@@ -38,6 +38,8 @@ int main(int argc, char ** argv)
 
   /* Crée le serveur */
   int socket_serveur = creer_serveur(8080);
+  /* Initialise la capture du signal d'interruption (Crtl C) */
+    initialiser_signaux();
   /* Variable qui contiendra le descripteur de fichier de la socket */
   int socket_client;
 
@@ -55,11 +57,8 @@ int main(int argc, char ** argv)
 
     /* Crée un processus de traitement d'une connexion */
     int pid = fork();
-        /* Initialise la capture du signal d'interruption (Crtl C) */
-    initialiser_signaux();
     /* Si dans le processus fils */
     if(pid==0){
-
       traitement_client(socket_client);
       close(socket_client);
     }
