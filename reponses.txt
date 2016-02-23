@@ -3,3 +3,18 @@
 	2) La commande kill le serveur.
 	3) Il ne se passe rien car, actuellement, on ne récupére que de l'IPv4.
 	4) Le second client lancée attend infiniment car le serveur ne lui répond jamais. Actuellement, notre serveur ne géré qu'un seul client.
+
+5.2.1 :
+	3) GET / HTTP/1.0
+	User-Agent: curl/7.38.0
+	Host: 172.18.49.136:8080
+	Accept: */*
+	Via: 1.1 cacheserv3.univ-lille1.fr:3128 (squid/2.7.STABLE5-20081024)
+	X-Forwarded-For: 172.18.49.136
+	Cache-Control: max-age=259200
+	Connection: keep-alive
+
+	curl n'accepte pas les adresses localhost 127.0.0.1 mais accepte l'adresse IP de la machine
+	4) GET = Méthode
+	/ = Chemin d'accés / URL
+	HTTP/1.1 = Version du protocole
